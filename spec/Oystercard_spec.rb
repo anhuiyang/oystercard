@@ -30,7 +30,7 @@ describe Oystercard do
  end
    it "will change status to in journey" do
      subject.touch_in
-     expect(subject.in_journey?).to eq true
+     expect(subject.in_journey?).to eq tru§e
    end
 
  describe '#touch_out' do
