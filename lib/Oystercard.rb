@@ -1,28 +1,30 @@
 
 class Oystercard
-  attr_reader :balance
-  attr_reader :in_journey
+  attr_accessor :balance
+  attr_reader :entry_station
+  attr_accessor :history
   MAX = 90
   MIN = 1
   def initialize
     @balance = 0
-    @in_journey = false
+    @entry_station = nil
+    @history = {}
   end
-  def top_up(n)
-    exceed = @balance + n - MAX
-    raise "Maximum balance £#{MAX} exceeded" if @balance + n > MAX
-    @balance += n
+  def top_up(v)
+    raise "Maximum balance £#{MAX} exceeded" if @balance + v > MAX
+    @balance += v
   end
-  def touch_in
-    raise "balance below £1" if @balance < MIN
-    @in_journey = true
+  def touch_in(entry)
+    raise "balance below £#{MIN}" if @balance < MIN
+    @entry_station = entry
   end
-  def touch_out
-    deduct(MIN)
-    @in_journey = false
+  def touch_out(exit)
+    @entry_station.nil? ? @balance : deduct(MIN)
+    @history[@entry_station] = exit
+    @entry_station = nil
   end
   def in_journey?
-    @in_journey
+    !@entry_station.nil?
   end
   private
   def deduct(n)
