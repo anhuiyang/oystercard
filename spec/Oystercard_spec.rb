@@ -9,12 +9,6 @@ describe Oystercard do
       it "expect default balance to be zero" do
         expect(subject.balance).to eq 0
       end
-      it "expect default entry_station to be nil" do
-        expect(subject.entry_station).to eq nil
-      end
-      it "is default to not in journey" do
-        expect(subject.in_journey?).to eq false
-      end
       it "expect to update card balance" do
         expect {subject.top_up(5)}.to change { subject.balance }.by 5
       end
@@ -41,20 +35,15 @@ describe Oystercard do
       subject.top_up(10)
     end
     it {(is_expected).to(respond_to(:touch_in).with(1).argument)}
-    it "will change status to in journey" do
-      subject.touch_in("aldgate")
-      expect(subject.in_journey?).to eq true
-    end
-    it "update entry station" do
-      expect(subject.touch_in(entry)).to eq entry
-    end
+    it {(is_expected).to(respond_to(:touch_out).with(1).argument)}
     it "deduct balance when touch out" do
       subject.touch_in(entry)
       expect {subject.touch_out(exit)}.to change {subject.balance}.by -(Oystercard::MIN)
     end
-    it "will change status to not in journey" do
+    it "update journey history" do
+      subject.touch_in(entry)
       subject.touch_out(exit)
-      expect(subject.in_journey?).to eq false
+      expect(subject.history).to eq [{entry => exit}]
     end
   end
 end
